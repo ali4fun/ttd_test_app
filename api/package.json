@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.6.1"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.1",
+    "mongodb": "^5.7.0"
   }
 }
