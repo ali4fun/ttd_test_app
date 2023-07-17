@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, Int32 } = require('mongodb');
 const uri = "mongodb+srv://ali4fun:z7Da3LDb5HC8CDAo@appdb.t7zpmu8.mongodb.net/?retryWrites=true&w=majority";
 const privateKey = 'Q2SRhpAiByQUiTS8fPeg';
 
@@ -54,30 +54,30 @@ describe('MongoDB Connection and Data Fetching', () => {
 
   it('should have valid auth', async () => {
     const usersCollection = db.collection('auth');
-    const token = jwt.sign({ name: 'admin', password: 'abcd' }, privateKey);
-    const user = await usersCollection.findOne({ 'name': 'admin'});
-    console.log(user);
+    const user = await usersCollection.findOne({ 'name': 'admin' });
     expect(jwt.decode(user.password).name).toBe('admin');
   });
 
-  // Test to fetch data using a token
-  // it('should fetch data using a token', async () => {
-
-  //   const name = 'admin';
-
-  //   // Assuming you have a collection named 'users' in your MongoDB
-  //   const usersCollection = db.collection('auth');
-
-  //   const user = await usersCollection.findOne({ 'name': name });
+  it('should have to read  items', async () => {
+    const usersCollection = db.collection('items');
+    const items = await usersCollection.find().toArray();
+    expect(items).toBeInstanceOf(Array)
+  });
 
 
 
-  //   // Assuming you want to fetch a user document using the token's userId
-  //   const userId = jwt.decode(user.token).name;
+  it('should have update  items', async () => {
+    const usersCollection = db.collection('items');
+    const result = await usersCollection
+      .updateOne({ _id: new ObjectId('6497f48805f3795aca96c51a') }, { $set: { 'price': 90 } });
+    expect(result).not.toBe(null);
+  });
 
-  //   console.log(user);
-
-  //   expect(user).toBe(null);
-  //   // Add more assertions or expectations as needed
-  // });
+  it('should be format data', async () => {
+    const usersCollection = db.collection('items');
+    const result = await usersCollection.findOne({});
+    console.log(result);
+    expect(result._id).toBeInstanceOf(ObjectId);
+    // expect(result.price).not.toBe(null);
+  });
 });
